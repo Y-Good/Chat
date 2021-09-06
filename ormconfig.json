@@ -1,0 +1,10 @@
+{
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3308,
+    "username": "root",
+    "password": "0000",
+    "database": "chat",
+    "entities": ["dist/**/*.entity{.ts,.js}"],
+    "synchronize": true
+  }
