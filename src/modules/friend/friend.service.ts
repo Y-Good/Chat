@@ -9,29 +9,19 @@ import { UserService } from '../user/user.service';
 export class FriendService {
     constructor(
         @InjectRepository(FriendEntity)
-        private readonly friendRepository:Repository<FriendEntity>
-    ){}
+        private readonly friendRepository: Repository<FriendEntity>
+    ) { }
 
-    async saveFriend(friendDto:FriendEntity){
+    async saveFriend(friendDto: FriendEntity) {
         return await this.friendRepository.save(friendDto);
     }
 
-    getFriendList(userIdDto:FriendEntity){
+    getFriendList(userIdDto: FriendEntity) {
 
         return this.friendRepository
-        .createQueryBuilder('friend')
-        .leftJoinAndMapOne('friend.friendInfo',UserEntity,'user','friend.friendID=user.uid')
-        .where('friend.userID=:userID',{userID:userIdDto.userID})
-        .getMany();
-    }
-    async test(){
-        // let res = await this.friendRepository.query('SELECT * FROM friend,`user` WHERE friend.friendID=user.uid')
-        let res = await this.friendRepository
-        .createQueryBuilder('friend')
-        .leftJoinAndMapOne('friend.friendInfo',UserEntity,'user','friend.friendID=user.uid')
-        .where('friend.userID=1')
-         .getMany();
-        return res
-        
+            .createQueryBuilder('friend')
+            .leftJoinAndMapOne('friend.friendInfo', UserEntity, 'user', 'friend.friendID=user.uid')
+            .where('friend.userID=:userID', { userID: userIdDto.userID })
+            .getMany();
     }
 }
