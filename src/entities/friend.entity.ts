@@ -1,27 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Common } from "./common.entity";
 import { UserEntity } from "./user.entity";
 
 @Entity('friend')
-export class FriendEntity {
+export class FriendEntity extends Common{
 
     @PrimaryGeneratedColumn()
     fid: number;
-
-    @CreateDateColumn({ comment: '创建时间' })
-    createTime: Date;
-
-    @UpdateDateColumn({ comment: '更新时间' })
-    updateTime: Date;
-
-    // @ManyToOne((type) => UserEntity)
-    // @JoinColumn({name:'friendID'})
-    // friendID: UserEntity;
-
-
-    // @ManyToOne((type) => UserEntity)
-    // @JoinColumn({name:'userID'})
-    // userID: UserEntity;
 
     @Column()
     friendID: number;

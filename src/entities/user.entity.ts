@@ -1,8 +1,9 @@
 import { ApiParam, ApiProperty } from "@nestjs/swagger";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Common } from "./common.entity";
 
 @Entity('user')
-export class UserEntity {
+export class UserEntity extends Common{
     @PrimaryGeneratedColumn()
     uid: number;
    
@@ -27,14 +28,6 @@ export class UserEntity {
 
     @Column({default:'user.png'})
     avatar:string;
-
-    // @Column({type:'bigint',default:new Date().getTime()})
-    // registerdate:number;
-    @CreateDateColumn({type:'timestamp',comment:'注册时间'})
-    createTime:Date;
-
-    @UpdateDateColumn({type:'timestamp'})
-    updateTime:Date;
     
     @Column({default:0})
     grade:number;
