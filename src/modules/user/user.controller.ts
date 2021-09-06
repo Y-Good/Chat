@@ -5,6 +5,7 @@ import { UserEntity } from 'src/entities/user.entity';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from './user.service';
 
+@ApiTags('用户')
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService, private readonly authService: AuthService) { }
@@ -15,7 +16,6 @@ export class UserController {
         return await this.userService.findAll();
     }
 
-    @ApiTags('创建用户')
     @Post('create')
     async createUser(@Body() userDto: UserEntity) {
         return await this.userService.saveUser(userDto);

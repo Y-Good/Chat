@@ -14,12 +14,14 @@ async function bootstrap() {
   app.useWebSocketAdapter(new WsAdapter(app));
   const options = new DocumentBuilder()
     .setTitle('接口')
-    .setDescription('The cats API description')
+    // .setDescription('The cats API description')
     .setVersion('1.0')
-    .addTag('cats')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
-  await app.listen(3000);
+  await app.listen(3000,()=>{
+    console.log('文档：http://localhost:3000/api');
+    
+  });
 }
 bootstrap();

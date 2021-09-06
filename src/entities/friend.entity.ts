@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserEntity } from "./user.entity";
 
@@ -24,7 +25,8 @@ export class FriendEntity {
 
     @Column()
     friendID: number;
-
+    
+    @ApiProperty()
     @Column()
     userID: number;
 
