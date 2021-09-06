@@ -8,14 +8,15 @@ import { FriendService } from './friend.service';
 @Controller('friend')
 export class FriendController {
     constructor(private readonly fridendService: FriendService, private readonly userService: UserService) { }
-
+    
+    @Get()
+    async getFriendList(@Query() userIdDto: FriendEntity) {
+        return await this.fridendService.getFriendList(userIdDto);
+    }
+    
     @Post()
     async addFriend(@Body() friendDto: FriendEntity) {
         return await this.fridendService.saveFriend(friendDto);
     }
 
-    @Get()
-    async getFriendList(@Query() userIdDto: FriendEntity) {
-        return await this.fridendService.getFriendList(userIdDto);
-    }
 }

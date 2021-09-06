@@ -9,8 +9,10 @@ import { FriendModule } from './modules/friend/friend.module';
 import { FileModule } from './modules/file/file.module';
 import { FileController } from './modules/file/file.controller';
 import { WsGateway } from './ws/ws.gateway';
-
-
+import { MessageModule } from './modules/message/message.module';
+import { MessageController } from './modules/message/message.controller';
+import { GroupModule } from './modules/group/group.module';
+import { GroupController } from './modules/group/group.controller';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -22,14 +24,16 @@ import { WsGateway } from './ws/ws.gateway';
     database: 'chat',
     entities: ["dist/**/*.entity{.ts,.js}"],
     synchronize: true,
-  }), UserModule, AuthModule, FileModule, FriendModule,],
-  controllers: [AppController, FileController],
+  }), UserModule, AuthModule, FileModule, FriendModule, MessageModule, GroupModule,],
+  controllers: [AppController, FileController, MessageController, GroupController],
   providers: [AppService, WsGateway],
 })
-export class AppModule implements NestModule{
+
+
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(UserMiddleware) 
-      .forRoutes({path:'user/create',method:RequestMethod.POST}); 
+      .apply(UserMiddleware)
+      .forRoutes({ path: 'user/create', method: RequestMethod.POST });
   }
 }

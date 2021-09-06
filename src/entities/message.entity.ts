@@ -1,18 +1,18 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserEntity } from "./user.entity";
 
 @Entity('message')
 export class MessageEntity {
-    // @PrimaryColumn()
-    // msgId: number;
+    @PrimaryGeneratedColumn()
+    msgId: number;
 
-    @PrimaryColumn({ type: 'bigint', default: new Date().getTime() })
-    dateTime: number;
+    @UpdateDateColumn({type:'timestamp',comment:'发送时间'})
+    sendTime: Date;
     
     @Column({ comment: '消息内容' })
     postMessage: string;
 
-    @Column()
+    @Column({default:0})
     status: number;
 
     @Column()
