@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { MessageEntity } from 'src/entities/message.entity';
 import { MessageService } from './message.service';
@@ -10,11 +10,9 @@ export class MessageController {
         private readonly messageService: MessageService
     ) { }
 
-    @Get()
-    async getMessageData(@Query() param: any) {
-        let res = await this.messageService.getMessageData(param.uid);
-        return res;
-
+    @Get(':uid')
+    async getMessageData(@Param() param: any) {
+        return  await this.messageService.getMessageData(param.uid);
     }
 
     @Post()

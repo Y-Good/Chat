@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { FriendEntity } from 'src/entities/friend.entity';
 import { UserService } from '../user/user.service';
@@ -9,9 +9,10 @@ import { FriendService } from './friend.service';
 export class FriendController {
     constructor(private readonly fridendService: FriendService, private readonly userService: UserService) { }
     
-    @Get()
-    async getFriendList(@Query() userIdDto: FriendEntity) {
-        return await this.fridendService.getFriendList(userIdDto);
+    @Get(':userID')
+    async getFriendList(@Param() userIdDto: FriendEntity) { 
+        return await this.fridendService.getFriendList(userIdDto.userID);
+        
     }
     
     @Post()

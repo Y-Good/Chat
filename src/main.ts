@@ -7,7 +7,7 @@ import { WsAdapter } from './ws/ws.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useStaticAssets(join(__dirname, '..', 'public'),{
+  app.useStaticAssets(join(__dirname, '..', '/public/upload'),{
     prefix: '/static/',   
  });
   app.enableCors();

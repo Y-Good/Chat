@@ -23,8 +23,8 @@ export class UserEntity extends Common{
     @Column({default:3})
     sex:number;
 
-    @Column({type:'bigint',default:null})
-    birth:number;
+    @Column({type:'timestamp',default:null})
+    birth:Date;
 
     @Column({default:'user.png'})
     avatar:string;
@@ -35,4 +35,9 @@ export class UserEntity extends Common{
     @Column({default:null})
     token:string;
 
+    @Column({default:null})
+    tel:string;
+
+    @Column({default:'来个签名'})
+    signature:string;
 }

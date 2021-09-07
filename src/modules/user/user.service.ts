@@ -1,10 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
+  
     constructor(
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>
@@ -14,7 +15,6 @@ export class UserService {
     async findAll() {
         return await this.userRepository.find();
     }
-
 
     //创建
     async saveUser(userDto: UserEntity) {
@@ -66,4 +66,15 @@ export class UserService {
         .where('user.username=:username',{username:username})
         .getOne()
     }
+
+    //获取用户信息
+    async getUserInfo(uid: any) {
+        return await this.userRepository.find({uid});
+    }
+
+    //模糊搜索
+    async userSearch(key:string){
+        return await this.userRepository.find({nickname:Like(`%${key}%`)});
+    }
+
 }

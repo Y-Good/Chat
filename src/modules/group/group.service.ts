@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GroupEntity } from 'src/entities/group.entity';
 import { GroupMemberEntity } from 'src/entities/group_member.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -78,5 +78,10 @@ export class GroupService {
 
     async findByAny(any: any) {
         return await this.groupRepository.findOne(any);
+    }
+
+     //模糊搜索
+     async groupSearch(key:string){
+        return await this.groupRepository.find({name:Like(`%${key}%`)});
     }
 }

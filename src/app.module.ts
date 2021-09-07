@@ -13,6 +13,8 @@ import { MessageModule } from './modules/message/message.module';
 import { MessageController } from './modules/message/message.controller';
 import { GroupModule } from './modules/group/group.module';
 import { GroupController } from './modules/group/group.controller';
+import { SearchController } from './search/search.controller';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -24,8 +26,8 @@ import { GroupController } from './modules/group/group.controller';
     database: 'chat',
     entities: ["dist/**/*.entity{.ts,.js}"],
     synchronize: true,
-  }), UserModule, AuthModule, FileModule, FriendModule, MessageModule, GroupModule,],
-  controllers: [AppController, FileController, MessageController, GroupController],
+  }), UserModule, AuthModule, FileModule, FriendModule, MessageModule, GroupModule, SearchModule,],
+  controllers: [AppController, FileController, MessageController, GroupController, SearchController],
   providers: [AppService, WsGateway],
 })
 

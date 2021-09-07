@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { UserEntity } from 'src/entities/user.entity';
@@ -10,7 +10,7 @@ import { UserService } from './user.service';
 export class UserController {
     constructor(private readonly userService: UserService, private readonly authService: AuthService) { }
 
-    @UseGuards(AuthGuard("jwt"))
+    // @UseGuards(AuthGuard("jwt"))
     @Get()
     async findAll() {
         return await this.userService.findAll();
@@ -23,7 +23,7 @@ export class UserController {
 
     @UseGuards(AuthGuard("local"))
     @Post('login')
-    async userLogin(@Req() req:any) {
+    async userLogin(@Req() req: any) {
         return this.authService.login(req.user);
     }
 
@@ -31,5 +31,10 @@ export class UserController {
     @Post('token')
     async loginByToken(@Body() tokenDto: any) {
         return await this.userService.loginByToken(tokenDto.token);
+    }
+
+    @Get(':uid')
+    async getUserInfo(@Param() param: any) {
+        return await this.userService.getUserInfo(param.uid);
     }
 }

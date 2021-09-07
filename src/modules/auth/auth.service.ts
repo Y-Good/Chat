@@ -29,6 +29,7 @@ export class AuthService {
         let token:string = this.jwtService.sign({ username, uid });
         this.userService.saveToken(uid,token);
         return {
+          uid:uid,
           token: token,
         };
       }
