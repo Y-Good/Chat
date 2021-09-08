@@ -31,6 +31,7 @@ export class MessageService {
         for (var i = 0; i < msgListCount.length; i++) {
             let friendInfo = await this.friendService.getMessageList(uid, msgListCount[i].toUserID);
             let msgDetail = await this.getMessage(uid, msgListCount[i].toUserID);
+  
             msgList.push({
                 friendID: friendInfo[0].friendID,
                 name: friendInfo[0].name,
@@ -51,8 +52,8 @@ export class MessageService {
     async getMessage(uid: number, friendID: number) {
         let msgContent = await this.messageRepository
             .createQueryBuilder('message')
-            .where('message.fromUserID=:uid', { uid: uid })
-            .andWhere('message.toUserID=:friendID', { friendID: friendID })
+            .where('message.fromUserID=:uid OR message.fromUserID=:friendID', { uid: uid,friendID: friendID })
+            .andWhere('message.toUserID=:friendID OR message.toUserID=:uid', { uid: uid,friendID: friendID })
             .orderBy({ 'message.sendTime': 'DESC' },)
             .getMany();
         return msgContent
