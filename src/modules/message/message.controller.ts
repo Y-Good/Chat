@@ -20,5 +20,13 @@ export class MessageController {
         return this.messageService.saveMessage(messageDto);
     }
 
+    //指定好友消息对话
+    @Post('friend')
+    async  getFriendMessage(@Body() body:MessageEntity){
+        let {fromUserID,toUserID}=body;
+       let res=await this.messageService.getMessage(fromUserID,toUserID);
+       return res.reverse();
+    }
+
 
 }

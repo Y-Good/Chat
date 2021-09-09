@@ -21,4 +21,7 @@ export class MessageEntity {
     @Column()
     toUserID: number;
 
+    @Column({default:'text'})
+    type:string;
+
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MessageEntity } from 'src/entities/message.entity';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { FriendService } from '../friend/friend.service';
 
 @Injectable()
@@ -42,6 +42,7 @@ export class MessageService {
         }
        return msgList;
 
+       
     }
 
     async saveMessage(messageDto: MessageEntity) {
@@ -52,10 +53,17 @@ export class MessageService {
     async getMessage(uid: number, friendID: number) {
         let msgContent = await this.messageRepository
             .createQueryBuilder('message')
-            .where('message.fromUserID=:uid OR message.fromUserID=:friendID', { uid: uid,friendID: friendID })
-            .andWhere('message.toUserID=:friendID OR message.toUserID=:uid', { uid: uid,friendID: friendID })
+            .where(new Brackets(qb=>{
+                qb.where('message.toUserID=:uid ',{ uid: uid})
+                .andWhere('message.fromUserID=:friendID',{friendID:friendID})
+            }))
+            .orWhere(new Brackets(qb=>{
+                qb.where('message.toUserID=:friendID ',{ friendID: friendID})
+                .andWhere('message.fromUserID=:uid',{uid:uid})
+            }))
             .orderBy({ 'message.sendTime': 'DESC' },)
             .getMany();
+            
         return msgContent
 
 
