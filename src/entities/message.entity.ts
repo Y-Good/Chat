@@ -9,7 +9,7 @@ export class MessageEntity {
     @UpdateDateColumn({type:'timestamp',comment:'发送时间'})
     sendTime: Date;
     
-    @Column({ comment: '消息内容' })
+    @Column({ comment: '消息内容' ,type:'longtext'})
     postMessage: string;
 
     @Column({default:0})

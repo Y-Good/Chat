@@ -37,7 +37,8 @@ export class MessageService {
                 name: friendInfo[0].name,
                 avatar: friendInfo[0].friendInfo.avatar,
                 postMessage: msgDetail[0].postMessage,
-                sendTime: msgDetail[0].sendTime
+                sendTime: msgDetail[0].sendTime,
+                type:msgDetail[0].type
             })
         }
        return msgList;
