@@ -19,7 +19,20 @@ export class FriendController {
     //申请列表
     @Get('apply/:uid')
     async getApplyList(@Param() param: any) {
-        return await this.fridendService.getApplyList(param.uid);
+        let res: any[] = [];
+        let applyList = await this.fridendService.getApplyList(param.uid);
+
+        applyList.forEach((item) => {
+            res.push({
+                friendID: item.friendID,
+                nickname: item.friendInfo.nickname,
+                avatar: item.friendInfo.avatar,
+                time: item.createTime,
+                name: item.name
+            })
+        })
+
+        return res;
     }
 
     //添加好友
@@ -31,12 +44,22 @@ export class FriendController {
     //同意申请
     @Post('agree')
     async agreeFriend(@Body() friendDto: FriendEntity) {
-        return await this.fridendService.agreeFriend(friendDto);
+        let res = await this.fridendService.agreeFriend(friendDto);
+        if (res.length > 0) {
+            return { code: 200, msg: '同意' }
+        }
     }
 
     //删除好友
-     @Post('delete')
-     async deleteFriend(@Body() friendDto: FriendEntity) {
-         return await this.fridendService.deleteFriend(friendDto);
-     }
+    @Post('delete')
+    async deleteFriend(@Body() friendDto: FriendEntity) {
+        return await this.fridendService.deleteFriend(friendDto);
+    }
+
+    // //查询用户是否为好友
+    // @Post('verify')
+    // async isMyFriend(@Body() verifyDto: FriendEntity) {
+    //     let res = await this.fridendService.verifyFriend(verifyDto);
+    //     return res.length > 0 ? true : false;
+    // }
 }

@@ -84,4 +84,10 @@ export class GroupService {
      async groupSearch(key:string){
         return await this.groupRepository.find({name:Like(`%${key}%`)});
     }
+
+    //验证群
+    async verifyGroup(groupID: number, userID: number) {
+        let res = await this.groupMemberRepository.find({ where: { groupID: groupID, userID: userID } });
+        return res.length > 0 ? true : false;
+    }
 }
