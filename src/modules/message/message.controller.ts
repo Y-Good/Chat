@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FriendEntity } from 'src/entities/friend.entity';
 import { MessageEntity } from 'src/entities/message.entity';
 import { FriendService } from '../friend/friend.service';
@@ -13,6 +13,7 @@ export class MessageController {
         private readonly friendService: FriendService
     ) { }
 
+  
     @Get(':uid')
     async getMessageData(@Param() param: any) {
         let res: any[] = [];
@@ -23,7 +24,7 @@ export class MessageController {
             res.push({
                 friendID: applyData[0].friendID,
                 avatar: 'apply.png',
-                postMessage: applyData[0].name,
+                postMessage: applyData[0].note,
                 sendTime: applyData[0].createTime,
                 type: 'apply'
             });
@@ -35,10 +36,10 @@ export class MessageController {
         return res;
     }
 
-    @Post()
-    async saveMessage(@Body() messageDto: MessageEntity) {
-        return this.messageService.saveMessage(messageDto);
-    }
+    // @Post()
+    // async saveMessage(@Body() messageDto: MessageEntity) {
+    //     return this.messageService.saveMessage(messageDto);
+    // }
 
     //指定好友消息对话
     @Post('friend')
@@ -48,5 +49,9 @@ export class MessageController {
         return res.reverse();
     }
 
-
+    // 消息图片列表
+    @Post('image')
+    async getImageList(@Body() imgDto: any) {
+        return await this.messageService.getImageList(imgDto);
+    }
 }

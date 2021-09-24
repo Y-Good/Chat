@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MessageEntity } from 'src/entities/message.entity';
 import { Brackets, Repository } from 'typeorm';
 import { FriendService } from '../friend/friend.service';
-
+import { messageDto } from '../message/message.dto';
 @Injectable()
 export class MessageService {
     constructor(
@@ -15,12 +15,6 @@ export class MessageService {
     async getMessageData(uid: number) {
         let msgList: any[] = [];
 
-        let res = await this.messageRepository
-            .createQueryBuilder('message')
-            .where('fromUserID=:uid', { uid: uid })
-            .orderBy('message.sendTime')
-            .getMany();
-
         //统计用户对话的消息人数
         let msgListCount = await this.messageRepository
             .createQueryBuilder('message')
@@ -31,22 +25,22 @@ export class MessageService {
         for (var i = 0; i < msgListCount.length; i++) {
             let friendInfo = await this.friendService.getMessageList(uid, msgListCount[i].toUserID);
             let msgDetail = await this.getMessage(uid, msgListCount[i].toUserID);
-  
+
             msgList.push({
                 friendID: friendInfo[0].friendID,
                 name: friendInfo[0].name,
                 avatar: friendInfo[0].friendInfo.avatar,
                 postMessage: msgDetail[0].postMessage,
                 sendTime: msgDetail[0].sendTime,
-                type:msgDetail[0].type
+                type: msgDetail[0].type
             })
         }
-       return msgList;
+        return msgList;
 
-       
+
     }
 
-    async saveMessage(messageDto: MessageEntity) {
+    async saveMessage(messageDto: messageDto) {
         return await this.messageRepository.save(messageDto);
     }
 
@@ -54,19 +48,34 @@ export class MessageService {
     async getMessage(uid: number, friendID: number) {
         let msgContent = await this.messageRepository
             .createQueryBuilder('message')
-            .where(new Brackets(qb=>{
-                qb.where('message.toUserID=:uid ',{ uid: uid})
-                .andWhere('message.fromUserID=:friendID',{friendID:friendID})
+            .where(new Brackets(qb => {
+                qb.where('message.toUserID=:uid ', { uid: uid })
+                    .andWhere('message.fromUserID=:friendID', { friendID: friendID })
             }))
-            .orWhere(new Brackets(qb=>{
-                qb.where('message.toUserID=:friendID ',{ friendID: friendID})
-                .andWhere('message.fromUserID=:uid',{uid:uid})
+            .orWhere(new Brackets(qb => {
+                qb.where('message.toUserID=:friendID ', { friendID: friendID })
+                    .andWhere('message.fromUserID=:uid', { uid: uid })
             }))
             .orderBy({ 'message.sendTime': 'DESC' },)
             .getMany();
-            
+
         return msgContent
 
+
+    }
+
+    //图片列表
+    async getImageList(imgDto) {
+        let { fromUserID, toUserID } = imgDto;
+        let res = await this.messageRepository.find({
+            where: [
+                { fromUserID: fromUserID, toUserID: toUserID, type: 'image' },
+                { fromUserID: toUserID, toUserID: fromUserID, type: 'image' }],
+                order:{
+                    sendTime:'ASC'
+                }
+        });
+        return res;
 
     }
 }

@@ -22,8 +22,11 @@ export class FriendEntity extends Common{
     @Column({ type: 'bigint', default: new Date().getTime(), comment: '最后通话时间' })
     lasttime: number;
 
-    @Column({ default: 0 })
+    @Column({ default: 0 ,comment:"0为通过，1已是好友，2未通过申请"})
     cross: number;
+
+    @Column({comment:"留言",default:"你好呀！"})
+    note:string;
 
     friendInfo:UserEntity
 }

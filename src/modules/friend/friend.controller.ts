@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/commo
 import { ApiTags } from '@nestjs/swagger';
 import { FriendEntity } from 'src/entities/friend.entity';
 import { UserService } from '../user/user.service';
+import { friendDto } from './friend.dto';
 import { FriendService } from './friend.service';
 
 @ApiTags('好友')
@@ -28,7 +29,8 @@ export class FriendController {
                 nickname: item.friendInfo.nickname,
                 avatar: item.friendInfo.avatar,
                 time: item.createTime,
-                name: item.name
+                name: item.name,
+                note: item.note
             })
         })
 
@@ -37,29 +39,33 @@ export class FriendController {
 
     //添加好友
     @Post('add')
-    async addFriend(@Body() friendDto: FriendEntity) {
+    async addFriend(@Body() friendDto: friendDto) {
         return await this.fridendService.addFriend(friendDto);
     }
 
     //同意申请
     @Post('agree')
-    async agreeFriend(@Body() friendDto: FriendEntity) {
+    async agreeFriend(@Body() friendDto: friendDto) {
         let res = await this.fridendService.agreeFriend(friendDto);
         if (res.length > 0) {
-            return { code: 200, msg: '同意' }
+            return { status: 200, msg: '你们已成为好友了！' }
         }
     }
 
     //删除好友
     @Post('delete')
-    async deleteFriend(@Body() friendDto: FriendEntity) {
-        return await this.fridendService.deleteFriend(friendDto);
+    async deleteFriend(@Body() friendDto: friendDto) {
+        this.fridendService.deleteFriend(friendDto);
+        return { status: 200, msg: '已删除好友' }
     }
 
-    // //查询用户是否为好友
-    // @Post('verify')
-    // async isMyFriend(@Body() verifyDto: FriendEntity) {
-    //     let res = await this.fridendService.verifyFriend(verifyDto);
-    //     return res.length > 0 ? true : false;
-    // }
+    //查询用户是否为好友
+    @Post('verify')
+    async isMyFriend(@Body() verifyDto: any) {
+        let {friendID, userID}=verifyDto;
+        return  await this.fridendService.verifyFriend(friendID, userID);
+       
+    }
+
+
 }
