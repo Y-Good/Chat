@@ -12,7 +12,7 @@ export class MessageService {
         private readonly friendService: FriendService
     ) { }
 
-    async getMessageData(uid: number) {
+    async getMessageData(uid: number): Promise<any[]> {
         let msgList: any[] = [];
 
         //统计用户对话的消息人数
@@ -40,12 +40,13 @@ export class MessageService {
 
     }
 
-    async saveMessage(messageDto: messageDto) {
+    //保存消息
+    async saveMessage(messageDto: messageDto): Promise<MessageEntity> {
         return await this.messageRepository.save(messageDto);
     }
 
     //根据日期排序返回消息内容
-    async getMessage(uid: number, friendID: number) {
+    async getMessage(uid: number, friendID: number): Promise<MessageEntity[]> {
         let msgContent = await this.messageRepository
             .createQueryBuilder('message')
             .where(new Brackets(qb => {
@@ -65,17 +66,16 @@ export class MessageService {
     }
 
     //图片列表
-    async getImageList(imgDto) {
+    async getImageList(imgDto: any) {
         let { fromUserID, toUserID } = imgDto;
         let res = await this.messageRepository.find({
             where: [
                 { fromUserID: fromUserID, toUserID: toUserID, type: 'image' },
                 { fromUserID: toUserID, toUserID: fromUserID, type: 'image' }],
-                order:{
-                    sendTime:'ASC'
-                }
+            order: {
+                sendTime: 'ASC'
+            }
         });
         return res;
-
     }
 }

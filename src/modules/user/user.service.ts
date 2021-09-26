@@ -5,19 +5,19 @@ import { Like, Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-  
+
     constructor(
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>
     ) { }
 
     //查询所有
-    async findAll() {
+    async findAll(): Promise<UserEntity[]> {
         return await this.userRepository.find();
     }
 
     //创建
-    async saveUser(userDto: UserEntity) {
+    async saveUser(userDto: UserEntity):Promise<UserEntity> {
         let { username } = userDto;
         let res = await this.findByAny({ 'username': username });
 
@@ -34,7 +34,7 @@ export class UserService {
     }
 
     //保存token
-    async saveToken(uid: number, token: string) {
+    async saveToken(uid: number, token: string):Promise<UserEntity> {
         let res = await this.userRepository.findOne({ uid: uid });
         res.token = token;
         return await this.userRepository.save(res);
@@ -59,22 +59,22 @@ export class UserService {
         return await this.userRepository.findOne(any);
     }
 
-    async findPassword(username:string){
+    async findPassword(username: string) {
         return this.userRepository
-        .createQueryBuilder('user')
-        .addSelect('user.password')
-        .where('user.username=:username',{username:username})
-        .getOne()
+            .createQueryBuilder('user')
+            .addSelect('user.password')
+            .where('user.username=:username', { username: username })
+            .getOne()
     }
 
     //获取用户信息
     async getUserInfo(uid: any) {
-        return await this.userRepository.find({uid});
+        return await this.userRepository.find({ uid });
     }
 
     //模糊搜索
-    async userSearch(key:string){
-        return await this.userRepository.find({nickname:Like(`%${key}%`)});
+    async userSearch(key: string) {
+        return await this.userRepository.find({ nickname: Like(`%${key}%`) });
     }
 
 }

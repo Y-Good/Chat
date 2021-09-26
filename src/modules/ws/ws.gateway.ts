@@ -12,33 +12,30 @@ export class WsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayD
   private logger: Logger = new Logger('ChatGateway');
 
   roomId: string;
+  socketList: any = {};
 
   afterInit(server: any) {
     this.logger.log('websocket init ...');
   }
   handleConnection(socket: Socket) {
-    console.log(socket.handshake.query);
-
-    let { fromUserID, toUserID } = socket.handshake.query;
-    this.roomId = fromUserID > toUserID ? fromUserID.toString() + toUserID.toString() : toUserID.toString() + fromUserID.toString();
-    socket.join(this.roomId);
-    console.log("uid:" + fromUserID + "进入");
-
+    let fromUserID: string = socket.handshake.query.uid.toString();
+    this.socketList[fromUserID] = socket.id;
+    console.log("id:" + socket.id + "进入");
   }
+
   handleDisconnect(socket: Socket) {
-    console.log("离开");
+    let uid:string = socket.handshake.query.uid.toString();
+    if (this.socketList.hasOwnProperty(uid)) {
+      //删除
+      delete this.socketList[uid];
+    }
   }
 
   @WebSocketServer() wss: Server;
-
   @SubscribeMessage('wori')
   handleMessage(@ConnectedSocket() socket: Socket, @MessageBody() data: messageDto) {
-    // let { fromUserID, toUserID } = data;
-    // let roomId = fromUserID > toUserID ? fromUserID.toString() + toUserID.toString() : toUserID.toString() + fromUserID.toString();
-    // console.log(data);
 
-
-    // this.messageService.saveMessage(data);
-    this.wss.to(this.roomId).emit('haha', data);
+    this.messageService.saveMessage(data);
+    this.wss.to(this.socketList[data.toUserID.toString()]).emit('haha', data);
   }
 }
