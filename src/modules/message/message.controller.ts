@@ -3,6 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FriendEntity } from 'src/entities/friend.entity';
 import { MessageEntity } from 'src/entities/message.entity';
 import { FriendService } from '../friend/friend.service';
+import { messageDto } from './message.dto';
 import { MessageService } from './message.service';
 
 @ApiTags('消息')
@@ -33,6 +34,7 @@ export class MessageController {
         msgData.forEach((item) => {
             res.push(item);
         });
+    
         return res;
     }
 
@@ -53,5 +55,11 @@ export class MessageController {
     @Post('image')
     async getImageList(@Body() imgDto: any) {
         return await this.messageService.getImageList(imgDto);
+    }
+
+    //标记已读  
+    @Post('isread')
+    async isReadMsg(@Body() messageDto:messageDto){
+        await this.messageService.isReadMsg(messageDto);
     }
 }

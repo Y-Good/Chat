@@ -22,11 +22,8 @@ export class FriendService {
         let res = await this.friendRepository.find({ where: [{ userID: userID, friendID: friendID }, { userID: friendID, friendID: userID }] });
         //两人互加
         let wori = await this.friendRepository.find({ where: { userID: userID, friendID: friendID, cross: 0 } });
-
         if (wori.length > 0) return { msg: "先同意人家", status: 206 }
-
         if (res.length > 0) return { msg: "不要重复添加", status: 206 }
-
         return await this.friendRepository
             .createQueryBuilder('friend')
             .insert()
@@ -36,7 +33,6 @@ export class FriendService {
     }
 
     getFriendList(userID: number) {
-
         return this.friendRepository
             .createQueryBuilder('friend')
             .leftJoinAndMapOne('friend.friendInfo', UserEntity, 'user', 'friend.friendID=user.uid')
@@ -46,7 +42,6 @@ export class FriendService {
     }
 
     getMessageList(userID: number, friendID: number): Promise<FriendEntity[]> {
-
         return this.friendRepository
             .createQueryBuilder('friend')
             .leftJoinAndMapOne('friend.friendInfo', UserEntity, 'user', 'friend.friendID=user.uid')

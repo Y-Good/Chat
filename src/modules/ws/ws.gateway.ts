@@ -2,15 +2,15 @@ import { Logger } from '@nestjs/common';
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { MessageEntity } from 'src/entities/message.entity';
-import { messageDto } from '../message/message.dto';
+import { messageInterface } from 'src/interfaces/message.interface';
+import { FriendService } from '../friend/friend.service';
 import { MessageService } from '../message/message.service';
 
 
 @WebSocketGateway(3003, { transports: ['websocket'] })
 export class WsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private readonly messageService: MessageService) { }
+  constructor(private readonly messageService: MessageService, private readonly friendService: FriendService) { }
   private logger: Logger = new Logger('ChatGateway');
-
   roomId: string;
   socketList: any = {};
 
@@ -24,7 +24,7 @@ export class WsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayD
   }
 
   handleDisconnect(socket: Socket) {
-    let uid:string = socket.handshake.query.uid.toString();
+    let uid: string = socket.handshake.query.uid.toString();
     if (this.socketList.hasOwnProperty(uid)) {
       //删除
       delete this.socketList[uid];
@@ -33,9 +33,12 @@ export class WsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayD
 
   @WebSocketServer() wss: Server;
   @SubscribeMessage('wori')
-  handleMessage(@ConnectedSocket() socket: Socket, @MessageBody() data: messageDto) {
-
-    this.messageService.saveMessage(data);
+  async handleMessage(@ConnectedSocket() socket: Socket, @MessageBody() data: messageInterface) {
+    //获取好友昵称
+    let res = await this.friendService.getMessageList(data.toUserID, data.fromUserID);
+    data.name = res[0].name;
+    data.avatar = res[0].friendInfo.avatar;
+    // this.messageService.saveMessage(data);
     this.wss.to(this.socketList[data.toUserID.toString()]).emit('haha', data);
   }
 }

@@ -25,8 +25,9 @@ export class MessageService {
         for (var i = 0; i < msgListCount.length; i++) {
             let friendInfo = await this.friendService.getMessageList(uid, msgListCount[i].toUserID);
             let msgDetail = await this.getMessage(uid, msgListCount[i].toUserID);
-
+            let notReadMsgCount =await this.notRedMsgCount(uid, msgListCount[i].toUserID);
             msgList.push({
+                notReadMsgCount:notReadMsgCount,
                 friendID: friendInfo[0].friendID,
                 name: friendInfo[0].name,
                 avatar: friendInfo[0].friendInfo.avatar,
@@ -36,8 +37,6 @@ export class MessageService {
             })
         }
         return msgList;
-
-
     }
 
     //保存消息
@@ -61,8 +60,6 @@ export class MessageService {
             .getMany();
 
         return msgContent
-
-
     }
 
     //图片列表
@@ -77,5 +74,22 @@ export class MessageService {
             }
         });
         return res;
+    }
+
+    //标记已读
+    async isReadMsg(messageDto:messageDto){
+        let { fromUserID, toUserID } = messageDto;
+        await this.messageRepository
+        .createQueryBuilder()
+        .update("message")
+        .set({status:"1"})
+        .where({fromUserID: fromUserID, toUserID: toUserID})
+        .execute();
+    }
+
+    //统计读消息条数
+    async notRedMsgCount(fromUserID: number, toUserID: number):Promise<number>{
+        let notReadCount = await this.messageRepository.find({where:{fromUserID: fromUserID, toUserID: toUserID,status:0}});
+        return notReadCount.length;
     }
 }
