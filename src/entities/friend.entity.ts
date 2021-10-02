@@ -28,5 +28,9 @@ export class FriendEntity extends Common{
     @Column({comment:"留言",default:"你好呀！"})
     note:string;
 
+    
+    @Column({default:0})
+    isDelete:number;
+    
     friendInfo:UserEntity
 }

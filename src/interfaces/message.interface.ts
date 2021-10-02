@@ -1,6 +1,6 @@
-import { messageDto } from "src/modules/message/message.dto";
+import { MessageDto } from "src/modules/message/message.dto";
 
-export interface messageInterface extends messageDto {
+export interface MessageInterface extends MessageDto {
   name: string;
   avatar: string;
 }

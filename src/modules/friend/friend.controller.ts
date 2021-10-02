@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { FriendEntity } from 'src/entities/friend.entity';
+import { MessageDto } from '../message/message.dto';
 import { UserService } from '../user/user.service';
 import { friendDto } from './friend.dto';
 import { FriendService } from './friend.service';
@@ -67,5 +68,9 @@ export class FriendController {
        
     }
 
-
+    //移除消息列表
+    @Post('removelist')
+    async removeList(@Body() messageDto:MessageDto){
+        this.fridendService.removeList(messageDto);
+    }
 }

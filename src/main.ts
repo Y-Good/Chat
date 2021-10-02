@@ -9,6 +9,9 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', '/public/upload'), {
     prefix: '/static/',
   });
+  app.useStaticAssets(join(__dirname, '..', '/public/message'), {
+    prefix: '/static/',
+  });
   app.enableCors();
   // app.useWebSocketAdapter(new WsAdapter(app));
   

@@ -1,4 +1,4 @@
-export interface messageDto {
+export interface MessageDto {
     postMessage: string,
     fromUserID: number,
     toUserID: number,

@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FriendEntity } from 'src/entities/friend.entity';
 import { UserEntity } from 'src/entities/user.entity';
-import { Not, Repository } from 'typeorm';
+import { Brackets, Not, Repository } from 'typeorm';
+import { MessageDto } from '../message/message.dto';
 import { MessageService } from '../message/message.service';
 import { UserService } from '../user/user.service';
 import { friendDto } from './friend.dto';
@@ -53,6 +54,7 @@ export class FriendService {
     //同意申请
     async agreeFriend(friendDto: friendDto) {
         let { friendID, userID } = friendDto;
+
         let res: FriendEntity[] = await this.friendRepository.find({ where: [{ friendID: friendID, userID: userID }, { friendID: userID, userID: friendID }] });
         res[0].cross = 1;
         res[1].cross = 1;
@@ -73,6 +75,7 @@ export class FriendService {
     //删除
     async deleteFriend(friendDto: friendDto) {
         let { friendID, userID } = friendDto;
+
         let res: FriendEntity[] = await this.friendRepository.find({ where: [{ friendID: friendID, userID: userID }, { friendID: userID, userID: friendID }] });
         res.forEach(item => {
             this.friendRepository.remove(item);
@@ -84,5 +87,40 @@ export class FriendService {
         let res = await this.friendRepository.find({ where: { friendID: friendID, userID: userID, cross: 1 } });
 
         return { verify: res.length > 0 ? true : false, name: res[0]?.name };
+    }
+
+    //移除消息列表
+    removeList(messageDto: MessageDto) {
+        let { fromUserID, toUserID } = messageDto;
+
+        this.friendRepository
+            .createQueryBuilder('friend')
+            .update(FriendEntity)
+            .set({ isDelete: 1 })
+            .where("userID=:userID", { userID: fromUserID })
+            .andWhere("friendID=:friendID", { friendID: toUserID })
+            .execute();
+    }
+
+    //恢复消息列表
+    recoverList(messageDto: MessageDto) {
+        let { fromUserID, toUserID } = messageDto;
+
+       this.friendRepository
+            .createQueryBuilder('friend')
+            .update(FriendEntity)
+            .set({ isDelete: 0 })
+            .where(new Brackets(qb => {
+                qb.where('userID=:userID ', { userID: toUserID })
+                    .andWhere('friendID=:friendID', { friendID: fromUserID })
+            }))
+            .orWhere(new Brackets(qb => {
+                qb.where('userID=:userID ', { userID: fromUserID })
+                    .andWhere('friendID=:friendID', { friendID: toUserID })
+            }))
+            .execute();
+           
+            // console.log(res);
+            
     }
 }

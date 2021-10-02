@@ -3,7 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FriendEntity } from 'src/entities/friend.entity';
 import { MessageEntity } from 'src/entities/message.entity';
 import { FriendService } from '../friend/friend.service';
-import { messageDto } from './message.dto';
+import { MessageDto } from './message.dto';
 import { MessageService } from './message.service';
 
 @ApiTags('消息')
@@ -23,7 +23,7 @@ export class MessageController {
 
         if (applyData.length > 0) {
             res.push({
-                friendID: applyData[0].friendID,
+                fromUserID: applyData[0].friendID,
                 avatar: 'apply.png',
                 postMessage: applyData[0].note,
                 sendTime: applyData[0].createTime,
@@ -59,7 +59,7 @@ export class MessageController {
 
     //标记已读  
     @Post('isread')
-    async isReadMsg(@Body() messageDto:messageDto){
+    async isReadMsg(@Body() messageDto:MessageDto){
         await this.messageService.isReadMsg(messageDto);
     }
 }

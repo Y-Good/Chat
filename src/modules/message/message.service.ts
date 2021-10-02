@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { createWriteStream } from 'fs';
+import { join } from 'path';
 import { MessageEntity } from 'src/entities/message.entity';
 import { Brackets, Repository } from 'typeorm';
 import { FriendService } from '../friend/friend.service';
-import { messageDto } from '../message/message.dto';
+import { MessageDto } from '../message/message.dto';
 @Injectable()
 export class MessageService {
     constructor(
@@ -14,33 +16,45 @@ export class MessageService {
     //消息列表
     async getMessageData(uid: number): Promise<any[]> {
         let msgList: any[] = [];
+        let fid: number;
 
         //统计用户对话的消息人数
         let msgListCount = await this.messageRepository
             .createQueryBuilder('message')
-            .andWhere('message.fromUserID=:uid', { uid: uid })
+            .where('message.fromUserID=:uid', { uid: uid })
+            .orWhere('message.toUserID=:uid', { uid: uid })
+            .andWhere('message.fromUserID=message.toUserID')
             .groupBy('message.toUserID')
+            .addGroupBy('message.fromUserID')
             .getMany();
 
+
         for (var i = 0; i < msgListCount.length; i++) {
-            let friendInfo = await this.friendService.getMessageList(uid, msgListCount[i].toUserID);
-            let msgDetail = await this.getMessage(uid, msgListCount[i].toUserID);
-            let notReadMsgCount = await this.notRedMsgCount(uid, msgListCount[i].toUserID);
-            msgList.push({
-                notReadMsgCount: notReadMsgCount,
-                friendID: friendInfo[0].friendID,
-                name: friendInfo[0].name,
-                avatar: friendInfo[0].friendInfo.avatar,
-                postMessage: msgDetail[0].postMessage,
-                sendTime: msgDetail[0].sendTime,
-                type: msgDetail[0].type
-            })
+            //当前用户id与结果比较，保证传入朋友id
+            fid = msgListCount[i].toUserID == uid ? msgListCount[i].fromUserID : msgListCount[i].toUserID;
+
+            let friendInfo = await this.friendService.getMessageList(uid, fid);
+            let msgDetail = await this.getMessage(msgListCount[i].fromUserID, msgListCount[i].toUserID);
+            let notReadMsgCount = await this.notRedMsgCount(msgListCount[i].fromUserID, msgListCount[i].toUserID);
+            if (friendInfo[0].isDelete == 0) {
+                if (msgDetail != null && friendInfo != null)
+                    //整合数据
+                    msgList.push({
+                        notReadMsgCount: notReadMsgCount,
+                        fromUserID: friendInfo[0]?.friendID,
+                        name: friendInfo[0]?.name,
+                        avatar: friendInfo[0]?.friendInfo.avatar,
+                        postMessage: msgDetail[0]?.postMessage,
+                        sendTime: msgDetail[0]?.sendTime,
+                        type: msgDetail[0]?.type
+                    })
+            }
         }
         return msgList;
     }
 
     //保存消息
-    async saveMessage(messageDto: messageDto): Promise<MessageEntity> {
+    async saveMessage(messageDto: MessageDto): Promise<MessageEntity> {
         return await this.messageRepository.save(messageDto);
     }
 
@@ -77,19 +91,28 @@ export class MessageService {
     }
 
     //标记已读
-    async isReadMsg(messageDto: messageDto) {
+    async isReadMsg(messageDto: MessageDto) {
         let { fromUserID, toUserID } = messageDto;
         await this.messageRepository
             .createQueryBuilder()
             .update("message")
             .set({ status: "1" })
             .where({ fromUserID: fromUserID, toUserID: toUserID })
+            .orWhere({ fromUserID: toUserID, toUserID: fromUserID })
             .execute();
     }
 
     //统计读消息条数
     async notRedMsgCount(fromUserID: number, toUserID: number): Promise<number> {
-        let notReadCount = await this.messageRepository.find({ where: { fromUserID: fromUserID, toUserID: toUserID, status: 0 } });
+        let notReadCount = await this.messageRepository.find({ where: { fromUserID: toUserID, toUserID: fromUserID, status: 0 } });
         return notReadCount.length;
     }
+
+
+    //消息图片
+    async saveMsgPic(file: any) {
+        const writeImage = createWriteStream(join(__dirname, '..', '../../public/message', `${file.originalname}`))
+        writeImage.write(file.buffer)
+    }
+
 }
