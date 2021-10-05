@@ -106,7 +106,7 @@ export class FriendService {
     recoverList(messageDto: MessageDto) {
         let { fromUserID, toUserID } = messageDto;
 
-       this.friendRepository
+        this.friendRepository
             .createQueryBuilder('friend')
             .update(FriendEntity)
             .set({ isDelete: 0 })
@@ -119,8 +119,8 @@ export class FriendService {
                     .andWhere('friendID=:friendID', { friendID: toUserID })
             }))
             .execute();
-           
-            // console.log(res);
-            
+
+        // console.log(res);
+
     }
 }

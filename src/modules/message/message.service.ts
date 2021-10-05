@@ -22,10 +22,10 @@ export class MessageService {
         let msgListCount = await this.messageRepository
             .createQueryBuilder('message')
             .where('message.fromUserID=:uid', { uid: uid })
-            .orWhere('message.toUserID=:uid', { uid: uid })
-            .andWhere('message.fromUserID=message.toUserID')
+            // .orWhere('message.toUserID=:uid', { uid: uid })
+            // .andWhere('message.fromUserID=message.toUserID')
             .groupBy('message.toUserID')
-            .addGroupBy('message.fromUserID')
+            // .addGroupBy('message.fromUserID')
             .getMany();
 
 

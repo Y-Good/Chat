@@ -44,7 +44,7 @@ export class WsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayD
       data.avatar = res[0].friendInfo.avatar;
     }
     //保存消息
-    this.messageService.saveMessage(data);
+    // this.messageService.saveMessage(data);
     this.friendService.recoverList(data);
     this.wss.to(this.socketList[data.toUserID.toString()]).emit('haha', data);
   }
