@@ -1,9 +1,3 @@
-interface friendDto {
-    friendID: number,
-    userID: number,
-    name:string,
-    note:string,
-    cross: number
-}
+import { FriendEntity } from "src/entities/friend.entity";
 
-export { friendDto }
+export class FriendDto extends FriendEntity { }

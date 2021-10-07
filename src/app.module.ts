@@ -21,7 +21,7 @@ import { WsModule } from './modules/ws/ws.module';
   imports: [TypeOrmModule.forRoot({
     type: 'mysql',
     host: 'localhost',
-    port: 3308,
+    port: 3306,
     username: 'root',
     password: '0000',
     database: 'chat',

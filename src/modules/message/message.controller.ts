@@ -16,6 +16,7 @@ export class MessageController {
 
   
     @Get(':uid')
+    @ApiOperation({summary:"获取用户消息列表"})
     async getMessageData(@Param() param: any) {
         let res: any[] = [];
         let applyData = await this.friendService.getApplyList(param.uid);
@@ -45,6 +46,7 @@ export class MessageController {
 
     //指定好友消息对话
     @Post('friend')
+    @ApiOperation({summary:"获取好友聊天记录"})
     async getFriendMessage(@Body() body: MessageEntity) {
         let { fromUserID, toUserID } = body;
         let res = await this.messageService.getMessage(fromUserID, toUserID);
@@ -59,6 +61,7 @@ export class MessageController {
 
     //标记已读  
     @Post('isread')
+    @ApiOperation({summary:"标记已读消息"})
     async isReadMsg(@Body() messageDto:MessageDto){
         await this.messageService.isReadMsg(messageDto);
     }

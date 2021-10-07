@@ -111,16 +111,13 @@ export class FriendService {
             .update(FriendEntity)
             .set({ isDelete: 0 })
             .where(new Brackets(qb => {
-                qb.where('userID=:userID ', { userID: toUserID })
-                    .andWhere('friendID=:friendID', { friendID: fromUserID })
+                qb.where('userID=:userID1 ', { userID1: toUserID })
+                    .andWhere('friendID=:friendID1', { friendID1: fromUserID })
             }))
             .orWhere(new Brackets(qb => {
-                qb.where('userID=:userID ', { userID: fromUserID })
-                    .andWhere('friendID=:friendID', { friendID: toUserID })
+                qb.where('userID=:userID2 ', { userID2: fromUserID })
+                    .andWhere('friendID=:friendID2', { friendID2: toUserID })
             }))
             .execute();
-
-        // console.log(res);
-
     }
 }

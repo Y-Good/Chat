@@ -1,6 +1,3 @@
-export interface MessageDto {
-    postMessage: string,
-    fromUserID: number,
-    toUserID: number,
-    type: string
-}
+import { MessageEntity } from "src/entities/message.entity";
+
+export class MessageDto extends MessageEntity { }

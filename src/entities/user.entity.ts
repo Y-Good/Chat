@@ -3,41 +3,40 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 import { Common } from "./common.entity";
 
 @Entity('user')
-export class UserEntity extends Common{
+export class UserEntity extends Common {
     @PrimaryGeneratedColumn()
     uid: number;
-   
-    @ApiProperty()
+
     @Column()
     username: string;
 
     @Column()
-    nickname:string;
+    nickname: string;
 
-    @Column({select:false})
-    password:string;
+    @Column({ select: false })
+    password: string;
 
     @Column()
-    email:string;
+    email: string;
 
-    @Column({default:3})
-    sex:number;
+    @Column({ default: 3 })
+    sex: number;
 
-    @Column({type:'timestamp',default:null})
-    birth:Date;
+    @Column({ type: 'timestamp', default: null })
+    birth: Date;
 
-    @Column({default:'user.png'})
-    avatar:string;
-    
-    @Column({default:0})
-    grade:number;
+    @Column({ default: 'user.png' })
+    avatar: string;
 
-    @Column({default:null})
-    token:string;
+    @Column({ default: 0 })
+    grade: number;
 
-    @Column({default:null})
-    tel:string;
+    @Column({ default: null })
+    token: string;
 
-    @Column({default:'来个签名'})
-    signature:string;
+    @Column({ default: null })
+    tel: string;
+
+    @Column({ default: '来个签名' })
+    signature: string;
 }

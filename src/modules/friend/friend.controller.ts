@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { FriendEntity } from 'src/entities/friend.entity';
 import { MessageDto } from '../message/message.dto';
 import { UserService } from '../user/user.service';
-import { friendDto } from './friend.dto';
+import { FriendDto } from './friend.dto';
 import { FriendService } from './friend.service';
 
 @ApiTags('好友')
@@ -40,13 +40,13 @@ export class FriendController {
 
     //添加好友
     @Post('add')
-    async addFriend(@Body() friendDto: friendDto) {
+    async addFriend(@Body() friendDto: FriendDto) {
         return await this.fridendService.addFriend(friendDto);
     }
 
     //同意申请
     @Post('agree')
-    async agreeFriend(@Body() friendDto: friendDto) {
+    async agreeFriend(@Body() friendDto: FriendDto) {
         let res = await this.fridendService.agreeFriend(friendDto);
         if (res.length > 0) {
             return { status: 200, msg: '你们已成为好友了！' }
@@ -55,7 +55,7 @@ export class FriendController {
 
     //删除好友
     @Post('delete')
-    async deleteFriend(@Body() friendDto: friendDto) {
+    async deleteFriend(@Body() friendDto: FriendDto) {
         this.fridendService.deleteFriend(friendDto);
         return { status: 200, msg: '已删除好友' }
     }

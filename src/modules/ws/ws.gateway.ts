@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
+import { FriendEntity } from 'src/entities/friend.entity';
 import { MessageEntity } from 'src/entities/message.entity';
 import { MessageInterface } from 'src/interfaces/message.interface';
 import { FriendService } from '../friend/friend.service';
@@ -37,14 +38,14 @@ export class WsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayD
     console.log(data);
 
     //获取好友昵称
-    let res = await this.friendService.getMessageList(data.toUserID, data.fromUserID);
+    let res:FriendEntity[] = await this.friendService.getMessageList(data.toUserID, data.fromUserID);
     
     if (res!=null) {
       data.name = res[0].name;
       data.avatar = res[0].friendInfo.avatar;
     }
     //保存消息
-    // this.messageService.saveMessage(data);
+    this.messageService.saveMessage(data);
     this.friendService.recoverList(data);
     this.wss.to(this.socketList[data.toUserID.toString()]).emit('haha', data);
   }

@@ -12,9 +12,9 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', '/public/message'), {
     prefix: '/static/',
   });
+
   app.enableCors();
-  // app.useWebSocketAdapter(new WsAdapter(app));
-  
+
   const options = new DocumentBuilder()
     .setTitle('接口')
     .setVersion('1.0')

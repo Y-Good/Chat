@@ -97,8 +97,8 @@ export class MessageService {
             .createQueryBuilder()
             .update("message")
             .set({ status: "1" })
-            .where({ fromUserID: fromUserID, toUserID: toUserID })
-            .orWhere({ fromUserID: toUserID, toUserID: fromUserID })
+            // .where({ fromUserID: fromUserID, toUserID: toUserID })
+            .where({ fromUserID: toUserID, toUserID: fromUserID })
             .execute();
     }
 

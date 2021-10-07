@@ -1,6 +1,4 @@
-interface searchKey{
-    uid:string,
-    key:string
+ export class SearchKeyDto{
+    uid:string;
+    key:string;
 }
-
-export {searchKey}

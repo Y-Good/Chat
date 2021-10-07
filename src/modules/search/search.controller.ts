@@ -4,7 +4,7 @@ import { GroupEntity } from 'src/entities/group.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { FriendService } from 'src/modules/friend/friend.service';
 import { GroupService } from 'src/modules/group/group.service';
-import { searchKey } from './search.dto';
+import { SearchKeyDto } from './search.dto';
 import { SearchService } from './search.service';
 
 @ApiTags('搜索')
@@ -19,9 +19,9 @@ export class SearchController {
     //搜索
 
     @Post()
-    async search(@Body() searchDto: searchKey) {
+    async search(@Body() searchKeyDto: SearchKeyDto) {
         
-        let { uid, key } = searchDto;
+        let { uid, key } = searchKeyDto;
         let userList: UserEntity[] = [];
         let groupList: GroupEntity[] = [];
 
