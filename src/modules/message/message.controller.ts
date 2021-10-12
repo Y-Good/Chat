@@ -18,12 +18,18 @@ export class MessageController {
     @Get(':uid')
     @ApiOperation({summary:"获取用户消息列表"})
     async getMessageData(@Param() param: any) {
-        let res: any[] = [];
-        let applyData = await this.friendService.getApplyList(param.uid);
-        let msgData = await this.messageService.getMessageData(param.uid);
+        let applyData:FriendEntity[] = await this.friendService.getApplyList(param.uid);
+        let res: any[] = await this.messageService.getMessageData(param.uid);
 
         if (applyData.length > 0) {
-            res.push({
+            // res.push({
+            //     fromUserID: applyData[0].friendID,
+            //     avatar: 'apply.png',
+            //     postMessage: applyData[0].note,
+            //     sendTime: applyData[0].createTime,
+            //     type: 'apply'
+            // });
+            res.unshift({
                 fromUserID: applyData[0].friendID,
                 avatar: 'apply.png',
                 postMessage: applyData[0].note,
@@ -32,9 +38,8 @@ export class MessageController {
             });
         }
 
-        msgData.forEach((item) => {
-            res.push(item);
-        });
+        // res.unshift(res);
+       
     
         return res;
     }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createWriteStream } from 'fs';
 import { join } from 'path';
+import { FriendEntity } from 'src/entities/friend.entity';
 import { MessageEntity } from 'src/entities/message.entity';
 import { Brackets, Repository } from 'typeorm';
 import { FriendService } from '../friend/friend.service';
@@ -19,7 +20,7 @@ export class MessageService {
         let fid: number;
 
         //统计用户对话的消息人数
-        let msgListCount = await this.messageRepository
+        let msgListCount: MessageEntity[] = await this.messageRepository
             .createQueryBuilder('message')
             .where('message.fromUserID=:uid', { uid: uid })
             // .orWhere('message.toUserID=:uid', { uid: uid })
@@ -33,9 +34,9 @@ export class MessageService {
             //当前用户id与结果比较，保证传入朋友id
             fid = msgListCount[i].toUserID == uid ? msgListCount[i].fromUserID : msgListCount[i].toUserID;
 
-            let friendInfo = await this.friendService.getMessageList(uid, fid);
-            let msgDetail = await this.getMessage(msgListCount[i].fromUserID, msgListCount[i].toUserID);
-            let notReadMsgCount = await this.notRedMsgCount(msgListCount[i].fromUserID, msgListCount[i].toUserID);
+            let friendInfo: FriendEntity[] = await this.friendService.getMessageList(uid, fid);
+            let msgDetail: MessageEntity[] = await this.getMessage(msgListCount[i].fromUserID, msgListCount[i].toUserID);
+            let notReadMsgCount: number = await this.notRedMsgCount(msgListCount[i].fromUserID, msgListCount[i].toUserID);
             if (friendInfo[0].isDelete == 0) {
                 if (msgDetail != null && friendInfo != null)
                     //整合数据
@@ -50,7 +51,8 @@ export class MessageService {
                     })
             }
         }
-        return msgList;
+        //日期排序
+        return msgList.sort((a, b) => { return b.sendTime < a.sendTime ? -1 : 1 });
     }
 
     //保存消息
@@ -63,12 +65,12 @@ export class MessageService {
         let msgContent = await this.messageRepository
             .createQueryBuilder('message')
             .where(new Brackets(qb => {
-                qb.where('message.toUserID=:uid ', { uid: uid })
-                    .andWhere('message.fromUserID=:friendID', { friendID: friendID })
+                qb.where('message.toUserID=:uid1 ', { uid1: uid })
+                    .andWhere('message.fromUserID=:friendID1', { friendID1: friendID })
             }))
             .orWhere(new Brackets(qb => {
-                qb.where('message.toUserID=:friendID ', { friendID: friendID })
-                    .andWhere('message.fromUserID=:uid', { uid: uid })
+                qb.where('message.toUserID=:friendID2 ', { friendID2: friendID })
+                    .andWhere('message.fromUserID=:uid2', { uid2: uid })
             }))
             .orderBy({ 'message.sendTime': 'DESC' },)
             .getMany();

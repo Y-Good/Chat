@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FriendEntity } from 'src/entities/friend.entity';
 import { MessageDto } from '../message/message.dto';
 import { UserService } from '../user/user.service';
@@ -13,6 +13,7 @@ export class FriendController {
 
     //获取用户好友
     @Get(':userID')
+    @ApiOperation({summary:"获取用户好友"})
     async getFriendList(@Param() userIdDto: FriendEntity) {
         return await this.fridendService.getFriendList(userIdDto.userID);
 
@@ -20,6 +21,7 @@ export class FriendController {
 
     //申请列表
     @Get('apply/:uid')
+    @ApiOperation({summary:"申请列表"})
     async getApplyList(@Param() param: any) {
         let res: any[] = [];
         let applyList = await this.fridendService.getApplyList(param.uid);
@@ -40,12 +42,14 @@ export class FriendController {
 
     //添加好友
     @Post('add')
+    @ApiOperation({summary:"添加好友"})
     async addFriend(@Body() friendDto: FriendDto) {
         return await this.fridendService.addFriend(friendDto);
     }
 
     //同意申请
     @Post('agree')
+    @ApiOperation({summary:"同意好友申请"})
     async agreeFriend(@Body() friendDto: FriendDto) {
         let res = await this.fridendService.agreeFriend(friendDto);
         if (res.length > 0) {
@@ -55,6 +59,7 @@ export class FriendController {
 
     //删除好友
     @Post('delete')
+    @ApiOperation({summary:"删除好友"})
     async deleteFriend(@Body() friendDto: FriendDto) {
         this.fridendService.deleteFriend(friendDto);
         return { status: 200, msg: '已删除好友' }
@@ -62,6 +67,7 @@ export class FriendController {
 
     //查询用户是否为好友
     @Post('verify')
+    @ApiOperation({summary:"验证用户是否为好友"})
     async isMyFriend(@Body() verifyDto: any) {
         let {friendID, userID}=verifyDto;
         return  await this.fridendService.verifyFriend(friendID, userID);
@@ -70,6 +76,7 @@ export class FriendController {
 
     //移除消息列表
     @Post('removelist')
+    @ApiOperation({summary:"将用户移除消息列表"})
     async removeList(@Body() messageDto:MessageDto){
         this.fridendService.removeList(messageDto);
     }

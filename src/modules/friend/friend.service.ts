@@ -6,7 +6,7 @@ import { Brackets, Not, Repository } from 'typeorm';
 import { MessageDto } from '../message/message.dto';
 import { MessageService } from '../message/message.service';
 import { UserService } from '../user/user.service';
-import { friendDto } from './friend.dto';
+import { FriendDto } from './friend.dto';
 
 @Injectable()
 export class FriendService {
@@ -16,7 +16,7 @@ export class FriendService {
     ) { }
 
     //添加好友
-    async addFriend(friendDto: friendDto) {
+    async addFriend(friendDto: FriendDto) {
         // return await this.friendRepository.save(friendDto);
         let { friendID, userID, name } = friendDto;
         //查询是否存在
@@ -52,7 +52,7 @@ export class FriendService {
     }
 
     //同意申请
-    async agreeFriend(friendDto: friendDto) {
+    async agreeFriend(friendDto: FriendDto) {
         let { friendID, userID } = friendDto;
 
         let res: FriendEntity[] = await this.friendRepository.find({ where: [{ friendID: friendID, userID: userID }, { friendID: userID, userID: friendID }] });
@@ -73,7 +73,7 @@ export class FriendService {
     }
 
     //删除
-    async deleteFriend(friendDto: friendDto) {
+    async deleteFriend(friendDto: FriendDto) {
         let { friendID, userID } = friendDto;
 
         let res: FriendEntity[] = await this.friendRepository.find({ where: [{ friendID: friendID, userID: userID }, { friendID: userID, userID: friendID }] });

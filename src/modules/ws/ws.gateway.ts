@@ -33,7 +33,7 @@ export class WsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayD
   }
 
   @WebSocketServer() wss: Server;
-  @SubscribeMessage('wori')
+  @SubscribeMessage('msg')
   async handleMessage(@ConnectedSocket() socket: Socket, @MessageBody() data: MessageInterface) {
     console.log(data);
 

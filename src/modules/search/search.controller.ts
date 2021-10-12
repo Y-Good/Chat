@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GroupEntity } from 'src/entities/group.entity';
 import { UserEntity } from 'src/entities/user.entity';
 import { FriendService } from 'src/modules/friend/friend.service';
@@ -19,6 +19,7 @@ export class SearchController {
     //搜索
 
     @Post()
+    @ApiOperation({summary:"搜索"})
     async search(@Body() searchKeyDto: SearchKeyDto) {
         
         let { uid, key } = searchKeyDto;
