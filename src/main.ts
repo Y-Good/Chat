@@ -12,6 +12,9 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', '/public/message'), {
     prefix: '/static/',
   });
+  app.useStaticAssets(join(__dirname, '..', '/public/sound'), {
+    prefix: '/static/',
+  });
 
   app.enableCors();
 

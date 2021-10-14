@@ -32,4 +32,12 @@ export class FileController {
         this.messageService.saveMsgPic(file);
         return "上传成功";
     }
+
+    @Post("sound")
+    @ApiOperation({summary:"聊天语音"})
+    @UseInterceptors(FileInterceptor('sound'))
+    uploadMsgSound(@UploadedFile() file:any){
+        this.messageService.saveSound(file);
+        return "上传成功";
+    }
 }

@@ -117,4 +117,10 @@ export class MessageService {
         writeImage.write(file.buffer)
     }
 
+    //语音
+    async saveSound(file:any){
+        const writeImage = createWriteStream(join(__dirname, '..', '../../public/sound', `${file.originalname}`))
+        writeImage.write(file.buffer)
+    }
+
 }
