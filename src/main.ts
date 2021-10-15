@@ -7,15 +7,16 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useStaticAssets(join(__dirname, '..', '/public/upload'), {
-    prefix: '/static/',
+    prefix: '/static/image/',
   });
   app.useStaticAssets(join(__dirname, '..', '/public/message'), {
-    prefix: '/static/',
+    prefix: '/static/image/',
   });
   app.useStaticAssets(join(__dirname, '..', '/public/sound'), {
-    prefix: '/static/',
+    prefix: '/static/sound/',
   });
 
+  //跨域
   app.enableCors();
 
   const options = new DocumentBuilder()
