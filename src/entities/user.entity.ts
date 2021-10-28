@@ -2,7 +2,7 @@ import { ApiParam, ApiProperty } from "@nestjs/swagger";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Common } from "./common.entity";
 
-@Entity('user')
+@Entity({ name: 'user' })
 export class UserEntity extends Common {
     @PrimaryGeneratedColumn()
     uid: number;

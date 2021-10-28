@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Param } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createWriteStream } from 'fs';
 import { join } from 'path';
@@ -19,7 +19,7 @@ export class MessageService {
         let msgList: any[] = [];
         let fid: number;
 
-        //统计用户对话的消息人数
+         //统计用户对话的消息人数
         let msgListCount: MessageEntity[] = await this.messageRepository
             .createQueryBuilder('message')
             .where('message.fromUserID=:uid', { uid: uid })
@@ -28,8 +28,10 @@ export class MessageService {
             .groupBy('message.toUserID')
             // .addGroupBy('message.fromUserID')
             .getMany();
+        // let msgListCount: any= await this.messageRepository
+        // .query(`select a.* from (select a.* from message as a inner join message as b on a.toUserID=${uid} and b.fromUserID=${uid}) a group by a.fromUserID`)
 
-
+        
         for (var i = 0; i < msgListCount.length; i++) {
             //当前用户id与结果比较，保证传入朋友id
             fid = msgListCount[i].toUserID == uid ? msgListCount[i].fromUserID : msgListCount[i].toUserID;
@@ -118,7 +120,7 @@ export class MessageService {
     }
 
     //语音
-    async saveSound(file:any){
+    async saveSound(file: any) {
         const writeImage = createWriteStream(join(__dirname, '..', '../../public/sound', `${file.originalname}`))
         writeImage.write(file.buffer)
     }
